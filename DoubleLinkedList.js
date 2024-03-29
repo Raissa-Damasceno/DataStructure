@@ -2,6 +2,7 @@ class Node {
   constructor(value) {
     this.value = value;
     this.next = null;
+    this.prev = null;
   }
 }
 
@@ -16,39 +17,42 @@ class LinkedList {
     const newHead = new Node(value);
 
     newHead.next = this.head;
+    this.head.prev = newHead;
     this.head = newHead;
 
     this.length++;
 
     return this.printList();
-  } //O(1)
+  }
 
   addToTail(value) {
     const newTail = new Node(value);
 
+    newTail.prev = this.tail;
     this.tail.next = newTail;
     this.tail = newTail;
 
     this.length++;
 
     return this.printList();
-  } //0(1)
+  }
 
   insert(index, value) {
-    const newNode = new Node(value);
-
     if (index > this.length - 1) {
-      this.addToTail(value);
+      return this.addToTail(value);
     } else if (index === 0) {
-      this.addToHeader(value);
-    } else {
-      const prevElem = this.getElemByIndex(index - 1);
-      const nextElem = prevElem.next;
-
-      prevElem.next = newNode;
-      newNode.next = nextElem;
-      this.length++;
+      return this.addToHeader(value);
     }
+
+    const newNode = new Node(value);
+    const prevElem = this.getElemByIndex(index - 1);
+    const nextElem = prevElem.next;
+
+    prevElem.next = newNode;
+    newNode.next = nextElem;
+    newNode.prev = prevElem;
+    nextElem.prev = nextElem;
+    this.length++;
 
     return this.printList();
   }
@@ -58,6 +62,7 @@ class LinkedList {
     const removedElem = prevElem.next;
 
     prevElem.next = removedElem.next;
+    removedElem.prev = prevElem;
 
     this.length--;
 
@@ -100,9 +105,9 @@ myLinkedList.addToTail(60);
 myLinkedList.addToTail(70);
 myLinkedList.addToTail(80);
 
-myLinkedList.insert(3, 90);
-
-myLinkedList.remove(5);
-myLinkedList.remove(5);
+myLinkedList.insert(5, 900);
+myLinkedList.remove(2);
+myLinkedList.remove(3);
+myLinkedList.remove(4);
 
 console.log(myLinkedList.printList());
